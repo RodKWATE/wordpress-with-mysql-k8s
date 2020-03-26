@@ -8,12 +8,15 @@ Spec:
  - port: 3306
    targetPort: 3306   
 ---
-kind: Endpoints
 apiVersion: v1
+kind: Endpoints
 metadata:
- name: wordpress-mysql
+  labels:
+    app.kubernetes.io/instance: wordpress-with-mysql-k8s
+  name: wordpress-mysql
+  namespace: wordpress
 subsets:
- - addresses:
-     - ip: database-1.csts9y7gzm3g.us-east-1.rds.amazonaws.com
-   ports:
-     - port: 3306
+  - addresses:
+      - ip: database-1.csts9y7gzm3g.us-east-1.rds.amazonaws.com
+    ports:
+      - port: 3306
