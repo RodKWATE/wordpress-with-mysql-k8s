@@ -1,6 +1,8 @@
 kind: Service
 apiVersion: v1
 metadata:
+labels:
+    app.kubernetes.io/instance: wordpress-with-mysql-k8s
  name: wordpress-mysql
 Spec:
  type: ClusterIP
