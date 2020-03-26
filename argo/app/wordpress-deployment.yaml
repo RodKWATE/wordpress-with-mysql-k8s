@@ -51,6 +51,8 @@ spec:
         env:
         - name: WORDPRESS_DB_HOST
           value: wordpress-mysql
+        - name: MYSQL_ROOT_PASSWORD
+          value: azerty123
         - name: WORDPRESS_DB_PASSWORD
           value: azerty123
         ports:
