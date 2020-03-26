@@ -1,24 +1,63 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-labels:
-    app.kubernetes.io/instance: wordpress-with-mysql-k8s
- name: wordpress-mysql
-Spec:
- type: ClusterIP
- ports:
- - port: 3306
-   targetPort: 3306   
+  name: wordpress-mysql
+  labels:
+    app: wordpress
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: wordpress
+    tier: mysql
+  clusterIP: None
 ---
 apiVersion: v1
-kind: Endpoints
+kind: PersistentVolumeClaim
 metadata:
+  name: mysql-pv-claim
   labels:
-    app.kubernetes.io/instance: wordpress-with-mysql-k8s
+    app: wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
   name: wordpress-mysql
-  namespace: wordpress
-subsets:
-  - addresses:
-      - ip: database-1.csts9y7gzm3g.us-east-1.rds.amazonaws.com
-    ports:
-      - port: 3306
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+# Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          value: azerty123
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
