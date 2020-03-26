@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/RodKWATE/wordpress-with-mysql-k8s.git
     targetRevision: HEAD
-    path: argo/wordpress
+    path: argo/app
     directory:
       recurse: true
   destination:
