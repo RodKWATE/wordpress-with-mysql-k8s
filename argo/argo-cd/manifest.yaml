@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wordpress-with-mysql-k8s
+  namespace: wordpress
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/RodKWATE/wordpress-with-mysql-k8s.git
+    targetRevision: HEAD
+    path: argo/wordpress
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: wordpress
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
